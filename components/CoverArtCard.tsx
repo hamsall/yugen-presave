@@ -3,6 +3,7 @@ import { formatReleaseDate } from "@/lib/formatReleaseDate";
 import { releaseConfig } from "@/lib/release";
 import { CountdownAndPlatforms } from "./CountdownAndPlatforms";
 import { EmbeddedSingle } from "./EmbeddedSingle";
+import { InfoTooltip } from "./InfoTooltip";
 
 /**
  * The whole floating light card from the moodboard: cover art, countdown,
@@ -36,8 +37,13 @@ export function CoverArtCard() {
         <h1 id="release-title" className="mt-1 text-3xl font-semibold tracking-tight text-card-ink">
           {title}
         </h1>
-        <p className="mt-1 text-sm font-medium text-accent-deep">
-          Available {formatReleaseDate(releaseDate)}
+        <p className="mt-1 flex items-center justify-center gap-1.5 text-sm font-medium text-accent-deep">
+          <span>Available {formatReleaseDate(releaseDate)}</span>
+          <InfoTooltip label="Why the exact time might shift">
+            This is the earliest {title} can go live anywhere — Spotify&rsquo;s own release page
+            carries the same caveat. If the countdown hits zero and it&rsquo;s not showing up for
+            you yet, it&rsquo;s on its way and should be there very soon.
+          </InfoTooltip>
         </p>
       </div>
 
