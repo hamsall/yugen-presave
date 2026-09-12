@@ -1,4 +1,4 @@
-# AGENTS.md — yugen pre-save site
+# AGENTS.md — Yūgen pre-save site
 
 This file is the repo-level brief for any coding agent (or human) working in this project. Read it before making changes. If a decision here turns out to be wrong, update this file in the same commit that changes the decision — it should never go stale.
 
@@ -8,7 +8,7 @@ This file is the repo-level brief for any coding agent (or human) working in thi
 
 ## What this is
 
-A single-page, single-purpose pre-save/pre-add landing page for Sam Hall's debut album *yugen*, releasing **25 September 2026**. Lives at `music.scmhall.blog`. This is also the seed of a larger portfolio rebuild (scmhall.blog is replacing hamsall.blog) — but v1 scope is this one page, done well, shipped fast. Do not let "the bigger site" scope-creep into this build.
+A single-page, single-purpose pre-save/pre-add landing page for Sam Hall's debut EP *Yūgen*, releasing **24 September 2026**. Lives at `music.scmhall.blog`. This is also the seed of a larger portfolio rebuild (scmhall.blog is replacing hamsall.blog) — but v1 scope is this one page, done well, shipped fast. Do not let "the bigger site" scope-creep into this build.
 
 **The one thing this page has to do:** let a listener who already wants to say yes commit to hearing the album on day one, in one tap, on whichever platform they already use — with zero remembered follow-up required. Every design and engineering decision should be checked against that sentence.
 
@@ -35,14 +35,14 @@ A single-page, single-purpose pre-save/pre-add landing page for Sam Hall's debut
 
 Reference images showed three consistent moves — follow this pattern, don't reinvent it:
 
-1. **Background:** dark, atmospheric, photographic or textured (deep navy/near-black base). This is the "yugen" mood layer — quiet, spacious, a little mysterious. Not a flat corporate gradient.
+1. **Background:** dark, atmospheric, photographic or textured (deep navy/near-black base). This is the "yūgen" mood layer — quiet, spacious, a little mysterious. Not a flat corporate gradient.
 2. **Content card:** a light, high-contrast card/panel floats on top of the dark background, containing the cover art, countdown, and CTA(s). This is where legibility and focus live — don't try to make the dark background carry body text.
 3. **CTA buttons:** bold, black or near-black, rectangular or pill-shaped, capitalized label (e.g. "PRE-SAVE"). No gradients, no shadows-as-decoration.
 4. **Countdown:** segmented (days / hours / mins / secs), each unit clearly labelled underneath the number. Monospace or tabular-numeral treatment so digits don't jitter the layout as they tick.
 5. **Multi-platform picker:** when more than one platform is available, render a **stacked list of rows**, each with the platform's logo + name on the left and its own button on the right (per the bottom-right reference image). This is not a segmented control or a dropdown — it's a simple list, dark-mode styled, one row per platform.
 6. **User Context**: while accessibility is key, remember people will be using instagram at night, so whilst constrast is important we want the final result to be easy on the eyes. also to match the dark, atmospheric mood.
 
-**Palette:** derived from the actual `yugen` album art, not chosen in the abstract. Once the cover file is in this project's `public/` folder, extract the palette from it directly — dark-blue-leaning tones from the art as the base/background, one accent pulled from the art's warmest/brightest colour for the CTA, checked against WCAG AA contrast before locking. Don't guess a generic "dark blue" independently of the actual image.
+**Palette:** derived from the actual `Yūgen` EP art, not chosen in the abstract. Once the cover file is in this project's `public/` folder, extract the palette from it directly — dark-blue-leaning tones from the art as the base/background, one accent pulled from the art's warmest/brightest colour for the CTA, checked against WCAG AA contrast before locking. Don't guess a generic "dark blue" independently of the actual image.
 
 **Until the cover art is in the repo:** use a sensible dark-navy placeholder scale in Tailwind config so the build isn't blocked. Keep all colours in `tailwind.config` / CSS variables, never hardcoded in components, so swapping in the real art-derived palette later is a config-only change.
 
@@ -60,9 +60,9 @@ type PlatformLink = {
 };
 
 type ReleaseConfig = {
-  title: string; // "yugen"
+  title: string; // "Yūgen"
   artist: string; // "Sam Hall"
-  releaseDate: string; // ISO date, 2026-09-25
+  releaseDate: string; // ISO date, 2026-09-24
   coverArtSrc: string;
   existingSingle: {
     title: string;
@@ -88,7 +88,8 @@ This means: when the Spotify URI or Apple pre-add link finally lands, it's a one
 - `lib/useCountdown.ts` — the ticking hook. `Countdown` (`components/Countdown.tsx`) is its purely presentational counterpart, taking `{ snapshot, announcement, title }` as props — no hook inside it. Handles: page loaded after release date (shows "Out now", not negative numbers); the visible digit grid is `aria-hidden`, with a single `aria-live="polite"` region as the *entire* screen-reader-facing countdown experience, updated once a minute (or on the release-day transition), never once a second.
 - `CountdownAndPlatforms` — the one client-side island on the page (`"use client"`). Owns `useCountdown`, renders `Countdown`, and derives `isReleased` to pass down to `PlatformSaveList` so buttons relabel "Pre-Save" → "Listen" the moment release day arrives — computed at each pageview, never baked into the static build.
 - `PlatformSaveList` — the stacked row list from the moodboard; each row is a `PlatformSaveRow` (icon, label, button/"Coming soon" state — the latter is a plain non-focusable `<span>`, not a fake disabled button).
-- `EmbeddedSingle` — wraps Spotify's own embed widget for the already-live single ("Ghost Girl" — confirmed via the widget's own rendered title, distinct from the "Yugen"-titled instant-gratification track discussed for Apple's pre-order path). No custom audio player, per working-backwards.md.
+- `EmbeddedSingle` — wraps Spotify's own embed widget for the already-live single ("Ghost Girl" — confirmed via the widget's own rendered title, distinct from the "Yūgen"-titled instant-gratification track discussed for Apple's pre-order path). No custom audio player, per working-backwards.md.
+- `InfoTooltip` — small reusable "i" disclosure (click/tap/hover/focus, Escape to close) for caveats that don't belong in the main copy. Currently used once, next to the release-date caption, to explain that the countdown targets the *earliest* release moment (per Spotify for Artists' own release page, which carries the same caveat) — so it hitting zero doesn't mean something's broken if the EP isn't live for a given listener yet.
 - `components/icons/*` — small hand-rolled monoline SVGs (Spotify/Apple Music/Amazon Music), not official brand assets. Each row also has a visible text label, so recognizability doesn't depend on the icon alone.
 
 ---
@@ -125,11 +126,13 @@ See `./working-backwards.md` for: Spotify URI status, Apple/Amazon eligibility, 
 
 ## Status as of this build (12 Sept 2026)
 
-- **Spotify album pre-save:** resolved. URI `spotify:album:0oDjObLTKHWZuBRAnQ2enA` → linked as `https://open.spotify.com/album/0oDjObLTKHWZuBRAnQ2enA`. Spotify renders its own native pre-save prompt on that album page for scheduled-but-undelivered releases, so no OAuth/backend integration was needed or built (would have violated "no account system").
+- **Title:** it's **Yūgen** (capital Y, macron on the u), not "yugen" — confirmed via the Spotify for Artists listing. Not a stylistic lowercase choice; earlier drafts of this doc and the code had it wrong. `lib/release.ts` is the only place the display title should ever be hardcoded.
+- **Release type:** it's an **EP**, not an album — confirmed via the Spotify for Artists "EP" tag (working-backwards.md's own half-finished "EP or Album?" note agrees). Spotify's URI/URL scheme still uses the literal string `album` for EPs too (`spotify:album:...`, `/album/...`) — that's Spotify's resource-type naming, not a mislabel on our part, so it's left as-is in `lib/release.ts`.
+- **Spotify EP pre-save:** resolved. URI `spotify:album:0oDjObLTKHWZuBRAnQ2enA` → linked as `https://open.spotify.com/album/0oDjObLTKHWZuBRAnQ2enA`. Spotify renders its own native pre-save prompt on that page for scheduled-but-undelivered releases, so no OAuth/backend integration was needed or built (would have violated "no account system").
 - **Apple Music / Amazon Music:** still pending — both render "Coming soon" per the pending-link pattern below.
-- **Existing single embed:** wired to `https://open.spotify.com/embed/track/5Y6S5ckQMKrSpAOMfgBtKR` ("Yugen" — inferred from the working-backwards doc's mention of it as the instant-gratification/lead track; **confirm this title is correct**).
-- **Release date/time:** built against **2026-09-24T12:00:00+01:00** per direct confirmation during build — note this is a day earlier than the "25 September 2026" mentioned elsewhere in this doc and the working-backwards press release. Flagging the discrepancy here rather than silently picking one; update whichever is stale.
-- **Cover art:** real art is in (`public/yugen-cover.jpg`), palette below is derived from it, not placeholder.
+- **Existing single embed:** wired to `https://open.spotify.com/embed/track/5Y6S5ckQMKrSpAOMfgBtKR` — confirmed as **"Ghost Girl"** via the widget's own rendered title (not "Yūgen"; that's the separate instant-gratification track name discussed for Apple's pre-order path).
+- **Release date/time:** **2026-09-24T12:00:00+01:00**, confirmed correct — this is the *earliest* release moment per Spotify for Artists' own release page (which shows the same "earliest it can go live" caveat we now surface on-page via `InfoTooltip`). The "25 September 2026" previously used elsewhere in this doc and in working-backwards.md's press release was the stale value.
+- **Cover art:** real art is in (`public/yugen-cover.jpg` — filename kept as-is, it's a technical path, not display text), palette below is derived from it, not placeholder.
 
 ## Palette (derived from `public/yugen-cover.jpg`, WCAG-checked)
 
@@ -149,7 +152,7 @@ All pairings actually used for text were checked against WCAG AA (≥4.5:1 for b
 - `npm run build` — production build (static export of the single route).
 - `npm run start` — serve the production build locally.
 - `npm run lint` — ESLint (flat config, Next core-web-vitals + TypeScript rules).
-- `npm run screenshot` — Playwright: screenshots the running app at mobile + desktop viewports to `scripts/out-*.png` (gitignored, regenerate as needed). Start the app first; override target with `BASE_URL`.
+- `npm run screenshot` — Playwright: screenshots the running app at mobile (390) + desktop (1440) viewports, a narrow-width sweep (320/360, where flex layouts are under the most pressure — this is how the platform-row "Coming soon" pill overflow and the InfoTooltip mobile clipping bugs were both first caught), and the `InfoTooltip` in its open state, to `scripts/out-*.png` (gitignored, regenerate as needed). Start the app first; override target with `BASE_URL`.
 - `npm run a11y` — Playwright + axe-core: WCAG2A/AA scan, keyboard tab-order dump, focus-ring check, and a `prefers-reduced-motion` check against the running app. Start the app first; override target with `BASE_URL`. One expected, non-fixable finding: an `aria-required-children` violation *inside* the embedded Spotify `<iframe>` — that's Spotify's own widget markup, not ours (re-run with `EXCLUDE_IFRAME=1` to scope to our own code, which passes clean).
 
 Deploy: push to the connected GitHub repo, Vercel builds `main` automatically. Domain `music.scmhall.blog` is configured at the Vercel project level, not in code.
