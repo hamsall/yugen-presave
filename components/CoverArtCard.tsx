@@ -51,7 +51,10 @@ export function CoverArtCard() {
         Order follows the working-backwards FAQ's own scan sequence for a
         cold visitor: identity (above) -> sound -> when -> how to not miss
         it. A stranger needs proof-of-real (the embed) before a countdown
-        or a button means anything to them.
+        or a button means anything to them. 
+        260913 feedback: user was confused about presave, is this related to the ep or single? 
+        moved the presave under the album cover to clarify and bunch related content. 
+        sound can follow as a secondary feature.
       */}
 
       <div className="mt-6">
