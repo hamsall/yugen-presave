@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/*
+ * Palette derived from public/yugen-cover.jpg — see AGENTS.md → "Palette"
+ * for how these were sampled and WCAG-checked. Nothing here is a guessed
+ * generic "dark blue"; everything traces back to real pixels in the art.
+ *
+ * ink-*        dark navy/teal background scale (the atmospheric layer)
+ * card*        the light floating card + its text tones
+ * accent*      warm gold from the art's dawn-light highlights (decorative
+ *              use only — CTAs stay black/near-black per the moodboard)
+ * cta          near-black button fill
+ */
+@theme inline {
+  --color-ink-950: #040d12;
+  --color-ink-900: #0a1f28;
+  --color-ink-800: #0f2b37;
+  --color-ink-700: #133b46;
+  --color-ink-600: #1c4a56;
+  --color-ink-500: #2c5e6a;
+  /* Cool blue-grey highlight sampled from the art — for muted text sitting
+     directly on the dark background (ink-500 itself is too dark to pass
+     AA as text, only useful as a decorative/border tone). */
+  --color-mist: #c5d1da;
+
+  --color-card: #f6f3ed;
+  --color-card-muted: #e7e1d6;
+  --color-card-ink: #1a1d1f;
+  --color-card-subtle: #3d4245;
+  --color-card-faint: #5a6064;
+
+  --color-accent: #e8b978;
+  --color-accent-bright: #ffdfa8;
+  --color-accent-deep: #7d551d;
+
+  --color-cta: #14171a;
+
+  --font-sans: var(--font-inter);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: var(--color-card);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Respect prefers-reduced-motion globally, not just per-component. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
