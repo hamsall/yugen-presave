@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 const pageTitle = `${releaseConfig.title} — ${releaseConfig.artist}`;
-const description = `${releaseConfig.artist}'s debut album "${releaseConfig.title}" is out ${formatReleaseDate(
+const description = `${releaseConfig.artist}'s debut EP "${releaseConfig.title}" is out ${formatReleaseDate(
   releaseConfig.releaseDate,
 )}. Pre-save it now so it shows up in your library automatically on release day — no account, no email, one tap.`;
 

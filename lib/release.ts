@@ -19,7 +19,8 @@ export type PlatformLink = {
 };
 
 export type ReleaseConfig = {
-  /** Album title, lowercase by design ("yugen"). */
+  /** EP title — "Yūgen" (with the macron on the u; confirmed via the
+   *  Spotify for Artists listing, not a stylistic lowercase choice). */
   title: string;
   artist: string;
   /** ISO 8601 timestamp, including explicit UTC offset. */
@@ -36,18 +37,19 @@ export type ReleaseConfig = {
 };
 
 export const releaseConfig: ReleaseConfig = {
-  title: "yugen",
+  title: "Yūgen",
   artist: "Sam Hall",
-  // Confirmed directly for this build: 24 Sept 2026, 12:00 (GMT+1 / BST).
-  // Note: this is one day earlier than the "25 September 2026" date used
-  // elsewhere in working-backwards.md — flagged in AGENTS.md, not silently
-  // resolved either way.
+  // 24 Sept 2026, 12:00 GMT+1 — this is the *earliest* release moment,
+  // straight from the Spotify for Artists release page (which carries the
+  // same "earliest it can go live" caveat we surface via <InfoTooltip> next
+  // to the on-page date). Confirmed as correct; the "25 September 2026"
+  // used elsewhere in working-backwards.md was the stale value.
   releaseDate: "2026-09-24T12:00:00+01:00",
   coverArtSrc: "/yugen-cover.jpg",
-  coverArtAlt: "Cover art for 'yugen' by Sam Hall",
+  coverArtAlt: "Cover art for 'Yūgen' by Sam Hall",
   existingSingle: {
     // Confirmed via the Spotify embed itself (rendered title): "Ghost Girl".
-    // Not the same track as the "Yugen"-titled instant-gratification track
+    // Not the same track as the "Yūgen"-titled instant-gratification track
     // mentioned in working-backwards.md for the (separate, pending) Apple
     // Music pre-order path — two different songs, don't conflate them.
     title: "Ghost Girl",
