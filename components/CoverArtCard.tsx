@@ -53,9 +53,6 @@ export function CoverArtCard() {
         it. A stranger needs proof-of-real (the embed) before a countdown
         or a button means anything to them.
       */}
-      <div className="mt-5">
-        <EmbeddedSingle title={existingSingle.title} spotifyEmbedUrl={existingSingle.spotifyEmbedUrl} />
-      </div>
 
       <div className="mt-6">
         <CountdownAndPlatforms releaseDate={releaseDate} title={title} platforms={platforms} />
@@ -65,6 +62,10 @@ export function CoverArtCard() {
         One tap and it&rsquo;s done — {title} shows up automatically in your library on release day.
         Nothing to remember.
       </p>
+      
+      <div className="mt-5">
+        <EmbeddedSingle title={existingSingle.title} spotifyEmbedUrl={existingSingle.spotifyEmbedUrl} />
+      </div>
     </section>
   );
 }
