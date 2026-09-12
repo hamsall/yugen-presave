@@ -10,7 +10,7 @@
 
 ### A one-tap way to make sure you don't miss "yugen" the moment it drops
 
-**LONDON — September 25, 2026** — Today, singer-songwriter Sam Hall (scmhall.blog) released *yugen*, his debut album, and launched a companion page — [music.scmhall.blog] — that lets listeners lock in the release before it exists. No new account is needed: each button on the page simply hands off to a streaming service the listener already has — Spotify, and Apple Music where eligible — so the only requirement is already being a user of one of those.
+**LONDON — September 25, 2026** (This will be earlier in other places as the song rolls out across the world.) — Today, singer-songwriter Sam Hall (scmhall.blog) released *yugen*, his debut album, and launched a companion page — [music.scmhall.blog] — that lets listeners lock in the release before it exists. No new account is needed: each button on the page simply hands off to a streaming service the listener already has — Spotify, and Apple Music where eligible — so the only requirement is already being a user of one of those.
 
 Most independent artists ask fans to "remember to check back" — a request that quietly fails almost every time. A fan hears a song they like, means to follow up, and by the time they think of it again the release-week moment has passed and the algorithm has moved on. The new page removes the remembering entirely: a tap on the Spotify button pre-saves the album straight into a fan's Spotify library; a tap on the Apple Music button pre-adds it there instead. Either way, on release day it simply appears, already theirs, no further action needed.
 
@@ -70,7 +70,7 @@ Listeners who already want to say yes lose the moment between "I like this" and 
 
 **What does success look like, concretely?**
 Primary metric: pre-save count by release day, specifically among the existing 588/64/4 — a direct, trackable "did the warm base actually convert" number, checkable by DM/story reply follow-ups since there's no formal tracking pixel.
-Secondary/soft signal: day-one stream concentration (Spotify for Artists dashboard) — a spike on Sept 25 specifically, vs. a flat trickle, is the sign the release-week push (including this page) worked, per Spotify's own "early concentration triggers algorithmic pickup" mechanic.
+Secondary/soft signal: day-one stream concentration (Spotify for Artists dashboard) — a spike on Sept 24/25 specifically, vs. a flat trickle, is the sign the release-week push (including this page) worked, per Spotify's own "early concentration triggers algorithmic pickup" mechanic.
 This is explicitly not a vanity-metrics project — 4 super listeners converting is a real, countable win at this scale, not a failure because the number is small.
 
 **What's the critical dependency risk, and what's the fallback?**
@@ -96,6 +96,9 @@ This route ships first, alone, in the new stack (Next.js/TypeScript/Tailwind on 
 **What's the one thing that would make this a failure even if it looks fine?**
 Shipping something generically pretty that a cold visitor can't parse in 3 seconds, or that makes the warm base's "yes" take more than one tap. Polish is not the goal here; conversion of an already-willing listener is.
 
+
+**EP or Album?**
+Let's call this an EP, since an EP is just a short album but it's good to be specific.
 ---
 
 
