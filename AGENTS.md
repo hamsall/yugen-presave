@@ -2,7 +2,7 @@
 
 This file is the repo-level brief for any coding agent (or human) working in this project. Read it before making changes. If a decision here turns out to be wrong, update this file in the same commit that changes the decision — it should never go stale.
 
-**Source of truth for product intent:** `../working-backwards.md` (one level up, in the planning repo). Read that first if you want the *why*; this file is the *how*.
+**Source of truth for product intent:** `./working-backwards.md` (same repo root). Read that first if you want the *why*; this file is the *how*.
 
 ---
 
@@ -82,12 +82,14 @@ This means: when the Spotify URI or Apple pre-add link finally lands, it's a one
 
 ---
 
-## Components (rough shape — adjust as you build, keep this section current)
+## Components (as built)
 
-- `CoverArtCard` — cover art + countdown + platform list, the whole "card" from the moodboard.
-- `Countdown` — a hook (`useCountdown(releaseDate)`) + presentational component. Must handle: page loaded after release date (show "Out now" state, not negative numbers), respect `prefers-reduced-motion` (no animated flip transitions if the user has that set), and not spam screen readers every second — use a single `aria-live="polite"` region that updates at a sane interval (e.g. once a minute, not once a second) rather than reading out every tick.
-- `PlatformSaveList` — the stacked row list from the moodboard; each row is a `PlatformSaveRow` (logo, label, button/coming-soon state).
-- `EmbeddedSingle` — wraps Spotify's own embed widget for the already-live single (no custom audio player — see working-backwards doc, the differentiator is the page, not the player).
+- `CoverArtCard` — server component; the whole floating "card" from the moodboard (cover art, title, embedded single, countdown + platform list, microcopy). Renders content order identity → sound → when → how-to-not-miss-it, per the working-backwards FAQ's own scan sequence for cold visitors.
+- `lib/useCountdown.ts` — the ticking hook. `Countdown` (`components/Countdown.tsx`) is its purely presentational counterpart, taking `{ snapshot, announcement, title }` as props — no hook inside it. Handles: page loaded after release date (shows "Out now", not negative numbers); the visible digit grid is `aria-hidden`, with a single `aria-live="polite"` region as the *entire* screen-reader-facing countdown experience, updated once a minute (or on the release-day transition), never once a second.
+- `CountdownAndPlatforms` — the one client-side island on the page (`"use client"`). Owns `useCountdown`, renders `Countdown`, and derives `isReleased` to pass down to `PlatformSaveList` so buttons relabel "Pre-Save" → "Listen" the moment release day arrives — computed at each pageview, never baked into the static build.
+- `PlatformSaveList` — the stacked row list from the moodboard; each row is a `PlatformSaveRow` (icon, label, button/"Coming soon" state — the latter is a plain non-focusable `<span>`, not a fake disabled button).
+- `EmbeddedSingle` — wraps Spotify's own embed widget for the already-live single ("Ghost Girl" — confirmed via the widget's own rendered title, distinct from the "Yugen"-titled instant-gratification track discussed for Apple's pre-order path). No custom audio player, per working-backwards.md.
+- `components/icons/*` — small hand-rolled monoline SVGs (Spotify/Apple Music/Amazon Music), not official brand assets. Each row also has a visible text label, so recognizability doesn't depend on the icon alone.
 
 ---
 
@@ -117,10 +119,47 @@ This means: when the Spotify URI or Apple pre-add link finally lands, it's a one
 
 ---
 
-## Commands
-
-_To be filled in once the project is scaffolded (package manager, dev/build/lint scripts). Keep this section accurate — an agent picking up this repo cold should be able to get running from this file alone._
-
 ## Open questions still tracked in the working-backwards doc
 
-See `../working-backwards.md` for: Spotify URI status, Apple/Amazon eligibility, exact palette hex values, embed-vs-custom-player decision (already leaning embed). Don't duplicate that tracking here — update it there.
+See `./working-backwards.md` for: Spotify URI status, Apple/Amazon eligibility, exact palette hex values, embed-vs-custom-player decision (already leaning embed). Don't duplicate that tracking here — update it there.
+
+## Status as of this build (12 Sept 2026)
+
+- **Spotify album pre-save:** resolved. URI `spotify:album:0oDjObLTKHWZuBRAnQ2enA` → linked as `https://open.spotify.com/album/0oDjObLTKHWZuBRAnQ2enA`. Spotify renders its own native pre-save prompt on that album page for scheduled-but-undelivered releases, so no OAuth/backend integration was needed or built (would have violated "no account system").
+- **Apple Music / Amazon Music:** still pending — both render "Coming soon" per the pending-link pattern below.
+- **Existing single embed:** wired to `https://open.spotify.com/embed/track/5Y6S5ckQMKrSpAOMfgBtKR` ("Yugen" — inferred from the working-backwards doc's mention of it as the instant-gratification/lead track; **confirm this title is correct**).
+- **Release date/time:** built against **2026-09-24T12:00:00+01:00** per direct confirmation during build — note this is a day earlier than the "25 September 2026" mentioned elsewhere in this doc and the working-backwards press release. Flagging the discrepancy here rather than silently picking one; update whichever is stale.
+- **Cover art:** real art is in (`public/yugen-cover.jpg`), palette below is derived from it, not placeholder.
+
+## Palette (derived from `public/yugen-cover.jpg`, WCAG-checked)
+
+Defined as CSS variables in `app/globals.css` under `@theme` (Tailwind v4 is CSS-config-first — there is no `tailwind.config.ts` in this project). The cover art itself is a desaturated, cool-toned photograph (blossom branches, dusk light) — median-cut quantization of the full image mostly returns greys, but sampling the most-saturated pixels turns up real dark teal/navy tones in the shadows (~hue 195–220°) and warm gold tones in the dawn-light highlights (~hue 28–40°). Both scales below are built from those actual sampled pixels, not guessed independently:
+
+- `ink-*` — dark navy/teal background scale (base `#0a1f28`–`#040d12`), from the shadow tones.
+- `card` / `card-muted` / `card-ink` / `card-subtle` / `card-faint` — the light floating card and its text tones, from the cream/off-white highlight tones (kept off-pure-white per the "easy on the eyes at night" brief).
+- `accent` / `accent-bright` / `accent-deep` — warm gold from the dawn-light highlights. **Not** used as the CTA fill (moodboard is explicit that CTAs are black/near-black) — used instead for the eyebrow label on the dark background and decorative touches, where contrast against `ink-*` is 10:1+.
+- `cta` — near-black button fill (`#14171a`), matches moodboard exactly, ~18:1 contrast with white label text.
+
+All pairings actually used for text were checked against WCAG AA (≥4.5:1 for body-size text) with a script before being locked in — see commit message for the specific ratios if you need to re-derive.
+
+## Commands
+
+- `npm install` — install dependencies.
+- `npm run dev` — local dev server at `localhost:3000`.
+- `npm run build` — production build (static export of the single route).
+- `npm run start` — serve the production build locally.
+- `npm run lint` — ESLint (flat config, Next core-web-vitals + TypeScript rules).
+- `npm run screenshot` — Playwright: screenshots the running app at mobile + desktop viewports to `scripts/out-*.png` (gitignored, regenerate as needed). Start the app first; override target with `BASE_URL`.
+- `npm run a11y` — Playwright + axe-core: WCAG2A/AA scan, keyboard tab-order dump, focus-ring check, and a `prefers-reduced-motion` check against the running app. Start the app first; override target with `BASE_URL`. One expected, non-fixable finding: an `aria-required-children` violation *inside* the embedded Spotify `<iframe>` — that's Spotify's own widget markup, not ours (re-run with `EXCLUDE_IFRAME=1` to scope to our own code, which passes clean).
+
+Deploy: push to the connected GitHub repo, Vercel builds `main` automatically. Domain `music.scmhall.blog` is configured at the Vercel project level, not in code.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
