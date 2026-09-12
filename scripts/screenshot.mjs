@@ -3,8 +3,9 @@
  * stress-tests a few narrow widths where flex layouts are most likely to
  * wrap/overflow (this is how the Apple/Amazon "Coming soon" pill overflow
  * bug and the InfoTooltip mobile clipping bug were both first caught), and
- * captures the InfoTooltip in its open state (it only renders on
- * hover/focus/click, so the default screenshots never see it).
+ * captures the InfoTooltip and the Spotify PreSaveModal in their open
+ * states (both only render on interaction, so the default shots never see
+ * them).
  *
  * Usage: start the app first (`npm run dev` or `npm run build && npm run
  * start`), then in another terminal: `npm run screenshot`.
@@ -46,7 +47,23 @@ await tooltipPage.goto(baseUrl, { waitUntil: "networkidle" });
 await tooltipPage.getByRole("button", { name: /why the exact time/i }).click();
 await tooltipPage.screenshot({ path: "scripts/out-tooltip-open.png", fullPage: true });
 
+// PreSaveModal open state — checks the glassmorphism backdrop blur and the
+// dialog's centering (Tailwind's preflight zeroes the margin the browser
+// normally uses to center a native <dialog>, so this is worth re-checking
+// visually whenever the modal's styling changes).
+const modalPage = await browser.newPage({
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 2,
+});
+await modalPage.goto(baseUrl, { waitUntil: "networkidle" });
+await modalPage.getByRole("button", { name: /pre-save spotify/i }).click();
+// Show.co's widget loads inside the iframe on its own schedule (out of our
+// control) — give it a bit longer than our own UI needs so the shot
+// consistently shows real content rather than a mid-load blank frame.
+await modalPage.waitForTimeout(1200);
+await modalPage.screenshot({ path: "scripts/out-modal-open.png" });
+
 await browser.close();
 console.log(
-  "Saved scripts/out-mobile.png, scripts/out-desktop.png, scripts/out-width-{320,360}.png, and scripts/out-tooltip-open.png",
+  "Saved scripts/out-mobile.png, scripts/out-desktop.png, scripts/out-width-{320,360}.png, out-tooltip-open.png, and out-modal-open.png",
 );

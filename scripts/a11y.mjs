@@ -50,8 +50,10 @@ for (let i = 0; i < 8; i++) {
 }
 
 // Verify our own CTA actually renders a visible focus-visible ring
-// (box-shadow-based, since we replace the native outline).
-const cta = page.locator("a", { hasText: "Pre-Save" }).first();
+// (box-shadow-based, since we replace the native outline). The Spotify
+// row's CTA is a <button> (it opens the pre-save modal); Apple/Amazon
+// would be <a> once they have a url — match either.
+const cta = page.locator("a, button", { hasText: "Pre-Save" }).first();
 await cta.focus();
 const ring = await cta.evaluate((el) => getComputedStyle(el).boxShadow);
 console.log("\nCTA focus ring (box-shadow):", ring);
@@ -62,9 +64,43 @@ const reducedPage = await browser.newPage();
 await reducedPage.emulateMedia({ reducedMotion: "reduce" });
 await reducedPage.goto(baseUrl, { waitUntil: "networkidle" });
 const transitionDuration = await reducedPage.evaluate(() => {
-  const link = document.querySelector("a");
-  return link ? getComputedStyle(link).transitionDuration : null;
+  const el = [...document.querySelectorAll("a, button")].find((node) =>
+    node.textContent?.includes("Pre-Save"),
+  );
+  return el ? getComputedStyle(el).transitionDuration : null;
 });
 console.log("\nCTA transition-duration under prefers-reduced-motion:", transitionDuration);
+
+// PreSaveModal checks: opens via the Spotify CTA, native <dialog> should
+// expose itself as a labelled dialog, trap focus inside it, lock body
+// scroll while open, and release everything cleanly however it's closed
+// (Escape, backdrop click, or the explicit close button).
+await cta.click();
+const dialog = page.locator("dialog[open]");
+console.log("\nPreSaveModal role:", await dialog.evaluate((el) => el.tagName + " (implicit dialog role)"));
+console.log("PreSaveModal accessible name:", await dialog.getAttribute("aria-label"));
+console.log(
+  "Focus trapped inside modal:",
+  await dialog.evaluate((el) => el.contains(document.activeElement)),
+);
+console.log("Body scroll locked while open:", await page.evaluate(() => document.body.style.overflow === "hidden"));
+
+await page.keyboard.press("Escape");
+await page.waitForTimeout(200); // let the "close" event's handler (unlock + state update) settle
+console.log("Closed via Escape:", !(await dialog.isVisible()));
+console.log("Body scroll restored after Escape:", await page.evaluate(() => document.body.style.overflow === ""));
+
+await cta.click();
+await page.waitForTimeout(200);
+await page.mouse.click(2, 2); // corner of the viewport — definitely outside the panel, i.e. the backdrop
+await page.waitForTimeout(200);
+console.log("Closed via backdrop click:", !(await dialog.isVisible()));
+
+await cta.click();
+await page.waitForTimeout(200);
+await page.getByRole("button", { name: "Close" }).click();
+await page.waitForTimeout(200);
+console.log("Closed via close button:", !(await dialog.isVisible()));
+console.log("Focus returned to trigger after close:", await cta.evaluate((el) => el === document.activeElement));
 
 await browser.close();
