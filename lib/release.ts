@@ -16,6 +16,15 @@ export type PlatformLink = {
   label: string;
   /** null = not yet available. Renders a "Coming soon" state, never hidden. */
   url: string | null;
+  /**
+   * Optional embeddable widget URL (e.g. CD Baby's Show.co pre-save
+   * widget). When present, the CTA opens this in an in-page modal instead
+   * of navigating away, so the OAuth hand-off to Spotify/Apple happens
+   * without ever leaving the site. `url` is still kept as the plain
+   * fallback link (used if embedding ever fails, and as the "open
+   * directly" escape hatch inside the modal itself).
+   */
+  embedUrl?: string;
 };
 
 export type ReleaseConfig = {
@@ -59,8 +68,15 @@ export const releaseConfig: ReleaseConfig = {
     {
       platform: "spotify",
       label: "Spotify",
-      // Resolved for this build: spotify:album:0oDjObLTKHWZuBRAnQ2enA
-      url: "https://open.spotify.com/album/0oDjObLTKHWZuBRAnQ2enA",
+      // Resolved via CD Baby's built-in Show.co pre-save tool (not a
+      // direct Spotify link — Spotify has no native pre-save prompt; see
+      // "Spotify EP pre-save" in AGENTS.md's Status section for why). `url`
+      // is the published campaign's plain minisite link (real navigation
+      // fallback + "open directly" escape hatch in the modal); `embedUrl`
+      // is Show.co's own <iframe> widget, shown in an in-page modal so the
+      // OAuth hand-off never has to leave the site.
+      url: "https://show.co/V0zocXS",
+      embedUrl: "https://show.co/social-unlock/6vOQincoMRB8X34NggtZTQ/widget",
     },
     {
       platform: "apple-music",
